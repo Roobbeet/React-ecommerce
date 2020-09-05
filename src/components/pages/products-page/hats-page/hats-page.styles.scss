@@ -1,0 +1,15 @@
+.collection-preview {
+  display: flex;
+  margin-bottom: 30px;
+
+  .title {
+    font-size: 28px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+  }
+
+  .preview {
+    display: flex;
+    justify-content: space-between;
+  }
+}
