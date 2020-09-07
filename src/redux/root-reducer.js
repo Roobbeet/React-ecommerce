@@ -2,6 +2,8 @@
 
 import userReducer from '../redux/user/user.reducer';
 import cartReducer from '../redux/cart/cart.reducer';
+import directoryReducer from '../redux/directory/directory.reducer';
+import shopReducer from '../redux/shop/shop.reducer';
 import {persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage'
 
@@ -15,6 +17,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
     user: userReducer, //ngasitau ke combineReducer kalo userReducer dipake untuk user
     cart: cartReducer,
+    directory: directoryReducer,
+    shop: shopReducer,
 });
 
 

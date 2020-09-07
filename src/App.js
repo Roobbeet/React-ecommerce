@@ -6,7 +6,6 @@ import HomePage from './components/pages/homepage/homepage.component'
 import { Switch, Route, Redirect } from 'react-router-dom'; //Link digunakan buat ngasih link /// withRouter digunakan untuk pass property yg jauh diatasnya dia (tanpa harus bikin props tunnel)
 import ShopPage from './components/pages/shoppage/shop.component';
 import Header from './components/header/header.component'
-import HatsPage from './components/pages/products-page/hats-page/hats-page.component';
 import SignInUpPage from './components/sign-in-up/sign-in-up.component';
 import { auth, createUserProfileDocument } from './components/firebase/firebase.utils';
 import CheckoutPage from '../src/components/pages/checkout/checkout.component'
@@ -49,9 +48,8 @@ class App extends React.Component {
     <Switch>
       <Route exact path='/' component={HomePage} />
       <Route path='/shop' component={ShopPage}/>
-      <Route exact path='/hats' component={HatsPage} id='0'/>
-      <Route exact path='/login' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInUpPage />)} id='1'/>
-      <Route exact path='/checkout' component={CheckoutPage} id='2'/>
+      <Route exact path='/login' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInUpPage />)} id='0'/>
+      <Route exact path='/checkout' component={CheckoutPage} id='1'/>
 
     </Switch>
     
