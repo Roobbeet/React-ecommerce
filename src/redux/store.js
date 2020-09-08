@@ -4,7 +4,11 @@ import logger from 'redux-logger'; //redux-logger adalah middleware tersebut
 
 import rootReducer from './root-reducer'; //store ngambil dari root reducer sesuai flow. array is expected
 
-const middlewares = [logger]; //isi array bisa ditambah kalo butuh
+const middlewares = []; //isi array bisa ditambah kalo butuh
+
+if(process.env.NODE_ENV === 'development') { //to apply the logger for dev only
+    middlewares.push(logger);
+}
 
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 //create and export our store from rootReducer function
