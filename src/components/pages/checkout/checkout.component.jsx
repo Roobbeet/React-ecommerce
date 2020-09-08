@@ -44,7 +44,6 @@ const CheckoutPage = ({cartItems, total}) => (
            <p>4242 4242 4242 4242 CVV: 123 Date: Any Date</p>
        </div>
     </div>
-    
 )
 
 const mapStateToProps = createStructuredSelector({
