@@ -33,11 +33,16 @@ const CheckoutPage = ({cartItems, total}) => (
             )
        }
        <div className="total">
+        
     <span>TOTAL: ${total}</span>
        </div>
        { total > 0 ?
            <StripeCheckoutButton price={total} /> : null
         }
+        <div className="test">
+           <h1>For testing purpose, use this credit card:</h1>
+           <p>4242 4242 4242 4242 CVV: 123 Date: Any Date</p>
+       </div>
     </div>
     
 )
