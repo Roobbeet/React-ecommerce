@@ -10,10 +10,13 @@
   .items {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    justify-content: center;
+    justify-items: center;
     grid-gap: 10px;
 
     & .collection-item {
       margin-bottom: 30px;
+      width: 100%;
     }
   }
 }
