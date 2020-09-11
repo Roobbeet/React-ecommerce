@@ -1,4 +1,5 @@
 import React, { } from 'react';
+import styled from 'styled-components'; //css in js library
 import './App.css';
 import {connect} from 'react-redux';
 import {setCurrentUser} from './redux/user/user.actions'
@@ -7,34 +8,43 @@ import { Switch, Route, Redirect } from 'react-router-dom'; //Link digunakan bua
 import ShopPage from './components/pages/shoppage/shop.component';
 import Header from './components/header/header.component'
 import SignInUpPage from './components/sign-in-up/sign-in-up.component';
-import { auth, createUserProfileDocument } from './components/firebase/firebase.utils';
-import CheckoutPage from '../src/components/pages/checkout/checkout.component'
+import { auth, createUserProfileDocument, addCOllectionAndDocuments } from './components/firebase/firebase.utils';
+import CheckoutPage from '../src/components/pages/checkout/checkout.component';
+import { selectCollectionsForPreview, selectShopCollections, selectShop} from './redux/shop/shop.selector'
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from './redux/user/user.selector';
 
+//styled component bikin komponen mini jsx dengan style contoh nama componentnya text, kita bakal specify dengan style.el = isi style. cara pakenya <el>isi element</el>.
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    const {setCurrentUser, collectionsArray, shopCollections} = this.props //props didispatch dari redux
+    console.log(shopCollections)
 
-    const {setCurrentUser} = this.props //props didispatch dari redux
-
+    //common algoritm for subscription ---> observable / listener
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      //this.setState({currentUser: user});
-     
+     //this function is to set current user everytime we refresh --> got from firebase
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
-        userRef.onSnapshot(snapShot => { //tanpa .data() method, gabakal dapet isinya
+
+        userRef.onSnapshot(snapShot => { //bakal fire tiap document update
           setCurrentUser({ //gantiin this.setState jadi function this.props.setCurrentUser ---> asalnya dari user.action.js
 
             currentUser: {
               id: snapShot.id,
               ...snapShot.data(),
             }
-          }, () => console.log(this.state))
+          })
         })
       }
-        setCurrentUser(userAuth)
+        setCurrentUser(userAuth);
+        /* kalo mau masukin ke firebase firestore
+        addCOllectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}))) //biar cuma nyimpen title sama itemsnya aja
+        */
     }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
+    
   }
   
   componentWillUnmount() {
@@ -58,9 +68,13 @@ class App extends React.Component {
   };  
   }  
 
-const mapStateToProps = ({user}) => ({
-  currentUser: user.currentUser
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  shopCollections: selectShopCollections,
+  collectionsArray: selectCollectionsForPreview,
 })
+//INGAT! harus pake createStructuredSelector biar gausah pass object lagi
+//kalo ga, nanti undefined karena js gatau ngambilnya dari mana
   
 const mapDispatchToProps = dispatch => ({ //return prop that we want to pass
   setCurrentUser: user => dispatch(setCurrentUser(user)) //payloadnya adalah user

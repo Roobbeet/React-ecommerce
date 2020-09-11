@@ -8,7 +8,7 @@ import CollectionItem from '../collection-item/collection-item.component'
 const PreviewCollection = ({title, items, routeName }) => {;
     return (
     <div className='collection-preview'>
-        <Link to={routeName} style={{
+        <Link to={`shop/${routeName}`} style={{
             textDecoration: 'none',
             color:'black',
         }}>

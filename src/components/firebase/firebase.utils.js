@@ -12,15 +12,17 @@ const config =  {
     appId: "1:939015106158:web:ac25604d7e874c6993c07f",
     measurementId: "G-R5BPJ50DLG"
   };
-
+//this function is to configure the firebase database
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
-  const userRef = firestore.doc(`users/${userAuth.uid}`);
-  const snapShot = await userRef.get();
+  const userRef = firestore.doc(`users/${userAuth.uid}`); //uid dari user
+  //menggunakan firestore buat cari di doc
+  const snapShot = await userRef.get(); //get the snapshot of the user
+
   if(!snapShot.exists) { //kalo belom ada, dibikin
     const {displayName, email} = userAuth;
     const createdAt = new Date();
-    try {
+    try { //set the userRef that we just get to the firebase
       await userRef.set({
         displayName,
         email,
@@ -42,6 +44,36 @@ documentRef returns a documentSnapshot object.
 collectionRef returns a querySnapshot object.
 */
 
+
+export const addCOllectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef = firestore.collection(collectionKey);
+  //collectionKey--> nama collection yg kita mau masukin (di firestore)
+  const batch = firestore.batch();
+  objectsToAdd.forEach(obj => { //objectsToAdd adalah selectCollectionsForPreview dari selector --> lihat app.js
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj); //set batch with newDocRef as the key, and obj as name
+    
+  });
+return await batch.commit()
+};
+
+export const convertCollectionsSnapshotToMap = (collection) => {
+  const transformedCollection = collection.docs.map(doc => {
+    const {title, items} = doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    }
+  });
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+}
+
+   //async function that must be awaited
 
 
   firebase.initializeApp(config);

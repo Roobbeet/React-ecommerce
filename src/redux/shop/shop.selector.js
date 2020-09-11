@@ -1,25 +1,19 @@
 import {createSelector} from 'reselect';
-const selectShop = state => state.shop;
 
-const COLLECTION_ID_MAP = {
-    hats: 1,
-    sneakers: 2,
-    jackets: 3,
-    womens: 4,
-    mens: 5,
-}
+export const selectShop = state => state.shop;
 
 export const selectShopCollections = createSelector(
     [selectShop],
-    shop => shop.collections
-)
+    shop => shop.collections 
+)//milih SHOP_DATA from shop.data.js
 
 export const selectCollectionsForPreview = createSelector(
     [selectShopCollections],
-    collections => Object.keys(collections).map(key => collections[key]) //ngubah dari data dengan model object/hash jadi array
+    collections => collections ? Object.keys(collections).map(key => collections[key]) : [] //ngubah dari data dengan model object/hash jadi array
 )
 
 export const selectCollection = collectionUrlParam => createSelector(
     [selectShopCollections],
-    collections => collections.find(collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam]) //MUST EXACT
+    //ada penyesuaian karena udh ga punya state sendiri
+    collections => (collections ? collections[collectionUrlParam] : null) //collections.find(collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam]) //MUST EXACT
 )
