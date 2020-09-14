@@ -3,8 +3,10 @@ import {persistStore} from 'redux-persist'
 import logger from 'redux-logger'; //redux-logger adalah middleware tersebut
 
 import rootReducer from './root-reducer'; //store ngambil dari root reducer sesuai flow. array is expected
+import thunk from 'redux-thunk';//piece of middlewares that enables to function
 
-const middlewares = []; //isi array bisa ditambah kalo butuh
+const middlewares = [thunk]; //isi array bisa ditambah kalo butuh
+//thunk bikin kita bisa naro function di middlewares
 
 if(process.env.NODE_ENV === 'development') { //to apply the logger for dev only
     middlewares.push(logger);

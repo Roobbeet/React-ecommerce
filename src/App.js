@@ -20,10 +20,33 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const {setCurrentUser, collectionsArray, shopCollections} = this.props //props didispatch dari redux
-    console.log(shopCollections)
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      //this function is to set current user everytime we refresh --> got from firebase
+       if (userAuth) {
+         const userRef = await createUserProfileDocument(userAuth);
+ 
+         userRef.onSnapshot(snapShot => { //bakal fire tiap document update
+           setCurrentUser({ //gantiin this.setState jadi function this.props.setCurrentUser ---> asalnya dari user.action.js
+ 
+             currentUser: {
+               id: snapShot.id,
+               ...snapShot.data(),
+             }
+           })
+         })
+       }
+         setCurrentUser(userAuth);
+       }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
 
-    //common algoritm for subscription ---> observable / listener
+    //common algoritm for subscription ---> observable / listener / observer
+
+  }
+
+
+  //observable pattern
+/*
+-Observable Pattern-
+
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
      //this function is to set current user everytime we refresh --> got from firebase
       if (userAuth) {
@@ -40,12 +63,17 @@ class App extends React.Component {
         })
       }
         setCurrentUser(userAuth);
-        /* kalo mau masukin ke firebase firestore
+        //kalo mau masukin ke firebase firestore
         addCOllectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}))) //biar cuma nyimpen title sama itemsnya aja
-        */
-    }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
+      }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
     
-  }
+*/
+
+  /*
+  ada 2 jenis listener yg biasa dipake:
+  1. Observable/observer Pattern --> yang dipake di contoh
+  2. Promise Pattern --> Ada di ShopPage, pake .get().then instead of .onSnapshot
+  */
   
   componentWillUnmount() {
     this.unsubscribeFromAuth();

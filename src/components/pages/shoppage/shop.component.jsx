@@ -1,17 +1,14 @@
 import React from 'react';
 import {Route} from 'react-router-dom'
-import CollectionOverview from '../../collections-overview/collections-overview.component'
-import CollectionPage from '../collection/collection.component';
 
-import {firestore, convertCollectionsSnapshotToMap} from '../../firebase/firebase.utils';
+import CollectionsOverviewContainer from '../../collections-overview/collection-overview.container';
+import CollectionPageContainer from '../../pages/collection/collection.container'
+
 
 import {connect} from 'react-redux'
-import { updateCollections } from '../../../redux/shop/shop.actions';
+import { fetchCollectionsStartAsync } from '../../../redux/shop/shop.actions';
 
-import WithSpinner from '../../with-spinner/with-spinner.component';
 
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionOverview);
-const CollectionsPageWithSpinner = WithSpinner(CollectionPage);
 
 
 //karena mau route per kategori, makanya dibikin collection overview
@@ -23,30 +20,33 @@ class ShopPage extends React.Component {
     unsubscribeFromSnapshot= null;
 
     componentDidMount() {
-        const {updateCollections} = this.props;
-        const collectionRef = firestore.collection('collections'); //ngambil 'collections' collection
+        //pake non thunk udh pindah ke shop.action.js
+        const { fetchCollectionsStartAsync } = this.props;
+        fetchCollectionsStartAsync();
         
-        collectionRef.onSnapshot(async snapshot => {
-           const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-           console.log(collectionsMap);
-           updateCollections(collectionsMap);
-           this.setState({loading: false})
-        })
+        /*
+        //To fetch from our database, but the collections is extremely nested
+        //Gonna use snapshot of the database instead of this API method
+        fetch(`https://firestore.googleapis.com/v1/projects/ecommercedb-a20e3/databases/(default)/documents/collections`)
+        .then(resp=> resp.json())
+        .then(collections => console.log(collections))
+        */
     }
+    //observable Pattern pake onSnapshot, kalo Promise pake .get()
+    //.get() adalah Promise, jadi pake .then buat pake promise tersebut
     
 
     render() {
-        const {match} = this.props
-        const {loading} = this.state
-        console.log(this.props)
+        const {match, isCollectionsLoaded} = this.props
+
         return (
         <div className="shop-page">
-        <Route exact path={`${match.path}`} render={(props) => <CollectionsOverviewWithSpinner isLoading={loading} {...props}/>} />
+        <Route exact path={`${match.path}`} component={CollectionsOverviewContainer} />
 
-        <Route path={`${match.path}/:collectionId`} render={(props) => <CollectionsPageWithSpinner isLoading={loading} {...props}/>}/>
+        <Route path={`${match.path}/:collectionId`} component={CollectionPageContainer}/>
             </div>    
         )
-    }
+    }//isCollectionsLoaded dibalik karena collections ada = ga loading
 }
 
 
@@ -61,9 +61,9 @@ const ShopPage  = ({match}) => (
 )
 
 */
-          
+
 const mapDispatchToProps = dispatch => ({
-    updateCollections: collectionsMap => dispatch(updateCollections(collectionsMap))
+    fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync())
 })
 
 export default connect(null, mapDispatchToProps)(ShopPage);

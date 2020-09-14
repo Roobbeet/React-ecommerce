@@ -17,3 +17,13 @@ export const selectCollection = collectionUrlParam => createSelector(
     //ada penyesuaian karena udh ga punya state sendiri
     collections => (collections ? collections[collectionUrlParam] : null) //collections.find(collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam]) //MUST EXACT
 )
+
+export const selectIsCollectionFetching = createSelector(
+    [selectShop],
+    shop => shop.isFetching
+) //buat dapet properti isFecthing
+
+export const selectIsCollectionsLoaded = createSelector(
+    [selectShop], 
+    shop => !!shop.collections //!! means not not
+) //bakal diconvert ke boolean value (whether the collections is up or no)
