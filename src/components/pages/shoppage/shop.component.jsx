@@ -6,7 +6,7 @@ import CollectionPageContainer from '../../pages/collection/collection.container
 
 
 import {connect} from 'react-redux'
-import { fetchCollectionsStartAsync } from '../../../redux/shop/shop.actions';
+import { fetchCollectionsStart } from '../../../redux/shop/shop.actions';
 
 
 
@@ -21,8 +21,8 @@ class ShopPage extends React.Component {
 
     componentDidMount() {
         //pake non thunk udh pindah ke shop.action.js
-        const { fetchCollectionsStartAsync } = this.props;
-        fetchCollectionsStartAsync();
+        const { fetchCollectionsStart } = this.props;
+        fetchCollectionsStart();
         
         /*
         //To fetch from our database, but the collections is extremely nested
@@ -63,7 +63,7 @@ const ShopPage  = ({match}) => (
 */
 
 const mapDispatchToProps = dispatch => ({
-    fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync())
+    fetchCollectionsStart: () => dispatch(fetchCollectionsStart())
 })
 
 export default connect(null, mapDispatchToProps)(ShopPage);
