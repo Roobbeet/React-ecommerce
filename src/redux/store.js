@@ -5,6 +5,8 @@ import logger from 'redux-logger'; //redux-logger adalah middleware tersebut
 import rootReducer from './root-reducer'; //store ngambil dari root reducer sesuai flow. array is expected
 import thunk from 'redux-thunk';//piece of middlewares that enables to function
 
+import createSagaMiddleware from 'redux-saga'; //mengganti thunk dengan saga
+
 const middlewares = [thunk]; //isi array bisa ditambah kalo butuh
 //thunk bikin kita bisa naro function di middlewares
 
