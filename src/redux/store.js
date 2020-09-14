@@ -5,8 +5,9 @@ import logger from 'redux-logger'; //redux-logger adalah middleware tersebut
 import rootReducer from './root-reducer'; //store ngambil dari root reducer sesuai flow. array is expected
 import thunk from 'redux-thunk';//piece of middlewares that enables to function
 import createSagaMiddleware from 'redux-saga'; //redux-saga
+import rootSaga from './root-saga';
 
-import {fetchCollectionsStart} from './shop/shop.sagas';
+//import {fetchCollectionsStart} from './shop/shop.sagas'; --> unused, diganti rootSaga
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -22,7 +23,7 @@ export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
 
 //invoke sagaMiddleware ---> used later
-sagaMiddleware.run(fetchCollectionsStart)
+sagaMiddleware.run(rootSaga)
 
 export const persistor = persistStore(store);
 

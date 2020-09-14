@@ -6,8 +6,9 @@ Tujuan saga:
 */
 //saga bakal ngecancel proses pertama bila butuh fire ke 2 (yield ke 2)
 
+//saga sendiri bisa jalan dengan listener dari action types karena lokasinya di middleware
 
-import { takeEvery, call, put } from 'redux-saga/effects'; //fungsi takeEvery ada di notepad
+import { takeEvery, call, put, takeLatest } from 'redux-saga/effects'; //fungsi takeEvery ada di notepad
 
 import ShopActionTypes from './shop.types';
 
@@ -48,8 +49,10 @@ export function* fetchCollectionsAsync() {
 }
 
 export function* fetchCollectionsStart() {
-    yield takeEvery(
+    yield takeLatest(
         ShopActionTypes.FETCH_COLLECTIONS_START,
         fetchCollectionsAsync
     );
 }
+//take vs takeEvery --> take cuma bisa fired sekali, takeEvery bisa diulang2
+//takeLatest adalah take yg ngetrigger function terakhir dan cancel yg sebelumnya
