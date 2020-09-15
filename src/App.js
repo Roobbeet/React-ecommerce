@@ -2,13 +2,12 @@ import React, { } from 'react';
 import styled from 'styled-components'; //css in js library
 import './App.css';
 import {connect} from 'react-redux';
-import {setCurrentUser} from './redux/user/user.actions'
 import HomePage from './components/pages/homepage/homepage.component'
 import { Switch, Route, Redirect } from 'react-router-dom'; //Link digunakan buat ngasih link /// withRouter digunakan untuk pass property yg jauh diatasnya dia (tanpa harus bikin props tunnel)
 import ShopPage from './components/pages/shoppage/shop.component';
 import Header from './components/header/header.component'
 import SignInUpPage from './components/sign-in-up/sign-in-up.component';
-import { auth, createUserProfileDocument, addCOllectionAndDocuments } from './components/firebase/firebase.utils';
+
 import CheckoutPage from '../src/components/pages/checkout/checkout.component';
 import { selectCollectionsForPreview, selectShopCollections, selectShop} from './redux/shop/shop.selector'
 import { createStructuredSelector } from 'reselect';
@@ -19,7 +18,12 @@ import { selectCurrentUser } from './redux/user/user.selector';
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
+  //componentDidMount ga dipake lagi (cuma buat nyimpen code lama)
   componentDidMount() {
+    
+    //Observer Way (changed to Saga method)
+
+    /*
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       //this function is to set current user everytime we refresh --> got from firebase
        if (userAuth) {
@@ -36,7 +40,9 @@ class App extends React.Component {
          })
        }
          setCurrentUser(userAuth);
-       }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
+       })
+    */
+   //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
 
     //common algoritm for subscription ---> observable / listener / observer
 
@@ -80,14 +86,15 @@ class App extends React.Component {
   }
 
   render() {
+    const {currentUser} = this.props
   return (
       <div className='App'>
         <Header />
     <Switch>
       <Route exact path='/' component={HomePage} />
       <Route path='/shop' component={ShopPage}/>
-      <Route exact path='/login' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInUpPage />)} id='0'/>
-      <Route exact path='/checkout' component={CheckoutPage} id='1'/>
+      <Route exact path='/login' render={() => currentUser ? (<Redirect to='/' />) : (<SignInUpPage />)}/>
+      <Route exact path='/checkout' component={CheckoutPage}/>
 
     </Switch>
     
@@ -95,20 +102,16 @@ class App extends React.Component {
     )
   };  
   }  
-
+//shop ga ada saga karena ga dibutuhin buat event listenernya (event cuma sekali)
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-  shopCollections: selectShopCollections,
-  collectionsArray: selectCollectionsForPreview,
+  currentUser: selectCurrentUser, //currentUser diakses dengan this.props
+  // shopCollections: selectShopCollections, ---> 2 2nya udh masuk redux
+  // collectionsArray: selectCollectionsForPreview,
 })
 //INGAT! harus pake createStructuredSelector biar gausah pass object lagi
 //kalo ga, nanti undefined karena js gatau ngambilnya dari mana
-  
-const mapDispatchToProps = dispatch => ({ //return prop that we want to pass
-  setCurrentUser: user => dispatch(setCurrentUser(user)) //payloadnya adalah user
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(App); 
+export default connect(mapStateToProps)(App); 
 //connect(arg1, arg2) --> arg1 adalah mapStateToProps, arg2 adalah mapDispatchToProps. Kalo tidak butuh mapStateToProps, makanya arg1nya null
 
 /*
