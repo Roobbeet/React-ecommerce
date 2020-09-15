@@ -3,7 +3,8 @@
 master: using redux-saga
 redux-thrunk: using thrunk
 
-# After you fork and clone:
+# TRY ME!
+https://roobbeet.github.io/React-ecommerce/
 
 ## Install dependencies
 
