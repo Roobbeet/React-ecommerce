@@ -12,15 +12,20 @@ const INITIAL_STATE = { //object that represents initial state. exact same kaya 
 
 const userReducer = (state = INITIAL_STATE, action) => {
     switch(action.type) { //bisa pake if else juga --> mirip kaya if action.type === '', then .... --> its kinda footswitch i guess
-        case UserActionTypes.SIGN_IN_SUCCESS: //bisa ditulis seperti ini
-        case UserActionTypes.SIGN_IN_SUCCESS: 
+        case UserActionTypes.SIGN_IN_SUCCESS:
             return {
                 ...state,
                 currentUser: action.payload,
                 error: null, //in case abis gagal dia berhasil (retry)
             }; //for identical return for more than 1 cases
+        case UserActionTypes.SIGN_OUT_SUCCESS:
+            return {
+                ...state,
+                currentUser: null,
+                error: null,
+            }
         case UserActionTypes.SIGN_IN_FAILURE: 
-        case UserActionTypes.SIGN_IN_SUCCESS: 
+        case UserActionTypes.SIGN_OUT_FAILURE: 
             return {
                 ...state,
                 error: action.payload,

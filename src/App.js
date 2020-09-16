@@ -1,5 +1,4 @@
 import React, { } from 'react';
-import styled from 'styled-components'; //css in js library
 import './App.css';
 import {connect} from 'react-redux';
 import HomePage from './components/pages/homepage/homepage.component'
@@ -9,9 +8,9 @@ import Header from './components/header/header.component'
 import SignInUpPage from './components/sign-in-up/sign-in-up.component';
 
 import CheckoutPage from '../src/components/pages/checkout/checkout.component';
-import { selectCollectionsForPreview, selectShopCollections, selectShop} from './redux/shop/shop.selector'
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './redux/user/user.selector';
+import {checkUserSession} from './redux/user/user.actions'
 
 //styled component bikin komponen mini jsx dengan style contoh nama componentnya text, kita bakal specify dengan style.el = isi style. cara pakenya <el>isi element</el>.
 
@@ -20,7 +19,8 @@ class App extends React.Component {
 
   //componentDidMount ga dipake lagi (cuma buat nyimpen code lama)
   componentDidMount() {
-    
+    const { checkUserSession } = this.props;
+    checkUserSession();
     //Observer Way (changed to Saga method)
 
     /*
@@ -110,8 +110,11 @@ const mapStateToProps = createStructuredSelector({
 })
 //INGAT! harus pake createStructuredSelector biar gausah pass object lagi
 //kalo ga, nanti undefined karena js gatau ngambilnya dari mana
+const mapDispatchToProps = dispatch => ({
+  checkUserSession: () => dispatch(checkUserSession())
+})
 
-export default connect(mapStateToProps)(App); 
+export default connect(mapStateToProps, mapDispatchToProps)(App); 
 //connect(arg1, arg2) --> arg1 adalah mapStateToProps, arg2 adalah mapDispatchToProps. Kalo tidak butuh mapStateToProps, makanya arg1nya null
 
 /*

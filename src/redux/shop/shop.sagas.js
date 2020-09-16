@@ -8,7 +8,7 @@ Tujuan saga:
 
 //saga sendiri bisa jalan dengan listener dari action types karena lokasinya di middleware
 
-import { takeEvery, call, put, takeLatest } from 'redux-saga/effects'; //fungsi takeEvery ada di notepad
+import { all, call, put, takeLatest } from 'redux-saga/effects'; //fungsi takeEvery ada di notepad
 
 import ShopActionTypes from './shop.types';
 
@@ -56,3 +56,9 @@ export function* fetchCollectionsStart() {
 }
 //take vs takeEvery --> take cuma bisa fired sekali, takeEvery bisa diulang2
 //takeLatest adalah take yg ngetrigger function terakhir dan cancel yg sebelumnya
+
+export function* shopSagas() {
+    yield all ([
+        call(fetchCollectionsStart),
+    ])
+}

@@ -1,10 +1,10 @@
-import { takeEvery, call, put, takeLatest, all } from 'redux-saga/effects';
+import { call, put, takeLatest, all } from 'redux-saga/effects';
 
 import UserActionTypes from './user.types';
 
-import {auth, googleProvider, createUserProfileDocument} from '../../components/firebase/firebase.utils'
+import {auth, googleProvider, createUserProfileDocument, getCurrentUser} from '../../components/firebase/firebase.utils'
 
-import {signInSuccess, signInFailure} from './user.actions';
+import {signInSuccess, signInFailure, signOutFailure, signOutSuccess} from './user.actions';
 
 //karena authenticatio/snapshotnya sama persis antara google dan email, makanya dijadiin 1 function generator
 export function* getSnapshotFromUserAuth(userAuth) {
@@ -53,9 +53,38 @@ export function* onEmailSignInStart() { //listener
     yield takeLatest(UserActionTypes.EMAIL_SIGN_IN_START, signInWithEmail)
 }
 
+export function* isUserAuthenticated() { //function buat check ada userAuth apa engga
+    try {
+        const userAuth = yield getCurrentUser(); //getCurrentUser dapet dari firebase
+        if (!userAuth) return;
+        yield getSnapshotFromUserAuth(userAuth)
+    } catch(error) {
+        yield put(signInFailure(error))
+    }
+}
+
+export function* onCheckUserSession() {
+    yield takeLatest(UserActionTypes.CHECK_USER_SESSION, isUserAuthenticated)
+}
+
+export function* signOut() {
+    try {
+        yield auth.signOut();
+        yield put(signOutSuccess())
+    } catch(error) {
+        yield put(signOutFailure(error))
+    }
+}
+
+export function* onSignOutStart() {
+    yield takeLatest(UserActionTypes.SIGN_OUT_START, signOut)
+}
+
 export function* userSagas() {
     yield all ([
         call(onGoogleSignInStart),
-        call(onEmailSignInStart)
+        call(onEmailSignInStart),
+        call(onCheckUserSession),
+        call(onSignOutStart),
     ])
 }
