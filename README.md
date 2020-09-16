@@ -4,7 +4,7 @@ master: using redux-saga
 redux-thrunk: using thrunk
 
 # TRY ME!
-https://roobbeet.github.io/React-ecommerce/
+http://roobbeet.herokuapp.com/
 
 ## Install dependencies
 
