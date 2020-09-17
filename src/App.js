@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React, { useState, useEffect } from 'react'; //useEffect fired tiap kali ada perubahan di component
 import './App.css';
 import {connect} from 'react-redux';
 import HomePage from './components/pages/homepage/homepage.component'
@@ -14,79 +14,18 @@ import {checkUserSession} from './redux/user/user.actions'
 
 //styled component bikin komponen mini jsx dengan style contoh nama componentnya text, kita bakal specify dengan style.el = isi style. cara pakenya <el>isi element</el>.
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
+const App = ({currentUser, checkUserSession}) => {
+  const unsubscribeFromAuth = null;
 
   //componentDidMount ga dipake lagi (cuma buat nyimpen code lama)
-  componentDidMount() {
-    const { checkUserSession } = this.props;
+  useEffect(() => { //componentDidMount
     checkUserSession();
-    //Observer Way (changed to Saga method)
+  }, [checkUserSession])
 
-    /*
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      //this function is to set current user everytime we refresh --> got from firebase
-       if (userAuth) {
-         const userRef = await createUserProfileDocument(userAuth);
- 
-         userRef.onSnapshot(snapShot => { //bakal fire tiap document update
-           setCurrentUser({ //gantiin this.setState jadi function this.props.setCurrentUser ---> asalnya dari user.action.js
- 
-             currentUser: {
-               id: snapShot.id,
-               ...snapShot.data(),
-             }
-           })
-         })
-       }
-         setCurrentUser(userAuth);
-       })
-    */
-   //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
+  useEffect(() => {//componentWillUnmount
+    return () => unsubscribeFromAuth();
+  }, [])
 
-    //common algoritm for subscription ---> observable / listener / observer
-
-  }
-
-
-  //observable pattern
-/*
--Observable Pattern-
-
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-     //this function is to set current user everytime we refresh --> got from firebase
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-
-        userRef.onSnapshot(snapShot => { //bakal fire tiap document update
-          setCurrentUser({ //gantiin this.setState jadi function this.props.setCurrentUser ---> asalnya dari user.action.js
-
-            currentUser: {
-              id: snapShot.id,
-              ...snapShot.data(),
-            }
-          })
-        })
-      }
-        setCurrentUser(userAuth);
-        //kalo mau masukin ke firebase firestore
-        addCOllectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}))) //biar cuma nyimpen title sama itemsnya aja
-      }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
-    
-*/
-
-  /*
-  ada 2 jenis listener yg biasa dipake:
-  1. Observable/observer Pattern --> yang dipake di contoh
-  2. Promise Pattern --> Ada di ShopPage, pake .get().then instead of .onSnapshot
-  */
-  
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-
-  render() {
-    const {currentUser} = this.props
   return (
       <div className='App'>
         <Header />
@@ -100,7 +39,7 @@ class App extends React.Component {
     
     </div>
     )
-  };  
+  
   }  
 //shop ga ada saga karena ga dibutuhin buat event listenernya (event cuma sekali)
 const mapStateToProps = createStructuredSelector({
@@ -170,3 +109,63 @@ redux doesn't remove state completely, masih bisa naro state di component react
 
 multiple user state: bad habit
 */
+
+
+//metode tanpa saga
+ /*
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      //this function is to set current user everytime we refresh --> got from firebase
+       if (userAuth) {
+         const userRef = await createUserProfileDocument(userAuth);
+ 
+         userRef.onSnapshot(snapShot => { //bakal fire tiap document update
+           setCurrentUser({ //gantiin this.setState jadi function this.props.setCurrentUser ---> asalnya dari user.action.js
+ 
+             currentUser: {
+               id: snapShot.id,
+               ...snapShot.data(),
+             }
+           })
+         })
+       }
+         setCurrentUser(userAuth);
+       })
+    */
+   //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
+
+    //common algoritm for subscription ---> observable / listener / observer
+
+
+
+
+//observable pattern
+/*
+-Observable Pattern-
+
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+     //this function is to set current user everytime we refresh --> got from firebase
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapShot => { //bakal fire tiap document update
+          setCurrentUser({ //gantiin this.setState jadi function this.props.setCurrentUser ---> asalnya dari user.action.js
+
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
+            }
+          })
+        })
+      }
+        setCurrentUser(userAuth);
+        //kalo mau masukin ke firebase firestore
+        addCOllectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}))) //biar cuma nyimpen title sama itemsnya aja
+      }) //our action is fired twice, 1 untuk snapshot dan dapetin data ke firebase, 1 login
+    
+*/
+
+  /*
+  ada 2 jenis listener yg biasa dipake:
+  1. Observable/observer Pattern --> yang dipake di contoh
+  2. Promise Pattern --> Ada di ShopPage, pake .get().then instead of .onSnapshot
+  */

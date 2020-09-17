@@ -33,7 +33,7 @@ const Header = ({ currentUser, signOutStart, hidden }) => (
     </div>
 )
 //CARA PAKE STATE YG ADA DI REDUCER --> connect()
-const mapStateToProps = createStructuredSelector({ //state will be root reducer
+const mapStateToProps = createStructuredSelector({ //state will be inside root reducer
     currentUser: selectCurrentUser,
     hidden: selectCartHidden, //kalo diliat, ini bakal ngarah ke currentUsernya user reducer
     //pengganti old style state and pass the state dengan createStructuredSelector

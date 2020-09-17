@@ -1,4 +1,4 @@
-import { call, put, takeLatest, all, take } from 'redux-saga/effects';
+import { call, put, takeLatest, all} from 'redux-saga/effects';
 
 import UserActionTypes from './user.types';
 
@@ -82,7 +82,7 @@ export function* onSignOutStart() {
 
 
 
-export function* signUp({payload: {displayName, email, password, confirmPassword}}) {
+export function* signUp({payload: {displayName, email, password}}) {
     try {
         const {user} = yield auth.createUserWithEmailAndPassword(email, password);
         yield put(signUpSuccess({user, additionalData: {
