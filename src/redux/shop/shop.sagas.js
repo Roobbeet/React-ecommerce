@@ -20,8 +20,6 @@ import {
 import {firestore, convertCollectionsSnapshotToMap} from '../../components/firebase/firebase.utils'
 
 export function* fetchCollectionsAsync() {
-    yield console.log('Saga Started')
-    
     //using try catch method for error and successful action
     try {
      const collectionRef = firestore.collection('collections'); //ngambil 'collections' collection
